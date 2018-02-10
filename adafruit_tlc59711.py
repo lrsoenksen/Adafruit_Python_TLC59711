@@ -23,14 +23,15 @@
 `adafruit_tlc59711`
 ====================================================
 
-CircuitPython module for the TLC59711 16-bit 12 channel LED PWM driver.  See
+Python module for the TLC59711 16-bit 12 channel LED PWM driver.  See
 examples/simpletest.py for a demo of the usage.
 
-* Author(s): Tony DiCola
+* Author(s): Tony DiCola, Steve Pomeroy
 """
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_TLC59711.git"
+__repo__ = "https://github.com/xxv/Adafruit_Python_TLC59711.git"
 
+import spidev
 
 # Globally disable invalid-name check as this chip by design has short channel
 # and register names.  It is confusing to rename these from what the datasheet
@@ -126,8 +127,10 @@ class TLC59711:
     r0 = _GS_Value(26)
 
 
-    def __init__(self, spi, *, auto_show=True):
-        self._spi = spi
+    def __init__(self, bus, device, *, auto_show=True):
+        self._spi = spidev.SpiDev()
+        self._bus = bus
+        self._device = device
         # This device is just a big 28 byte long shift register without any
         # fancy update protocol.  Blast out all the bits to update, that's it!
         self._shift_reg = bytearray(28)
@@ -158,10 +161,9 @@ class TLC59711:
     def _write(self):
         # Write out the current state to the shift register.
         try:
-            # Lock the SPI bus and configure it for the shift register.
-            while not self._spi.try_lock():
-                pass
-            self._spi.configure(baudrate=10000000, polarity=0, phase=0)
+            self._spi.open(self._bus, self._device)
+            self._spi.max_speed_hz=10000000
+            self._spi.mode = 0x00
             # Update the preamble of chip state in the first 4 bytes (32-bits)
             # with the write command, function control bits, and brightness
             # control register values.
@@ -193,10 +195,10 @@ class TLC59711:
             # values that have already been set by the user.  Now write out the
             # the entire set of bytes.  Note there is no latch or other
             # explicit line to tell the chip when finished, it expects 28 bytes.
-            self._spi.write(self._shift_reg)
+            self._spi.writebytes(list(self._shift_reg))
         finally:
             # Ensure the SPI bus is unlocked.
-            self._spi.unlock()
+            self._spi.close()
 
     def show(self):
         """Write out the current LED PWM state to the chip.  This is only necessary if

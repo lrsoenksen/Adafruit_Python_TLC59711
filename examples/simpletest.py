@@ -1,18 +1,13 @@
 # Simple demo of the TLC59711 16-bit 12 channel LED PWM driver.
 # Shows setting channel values in a few ways.
-# Author: Tony DiCola
-import board
-import busio
+# Author: Tony DiCola, Steve Pomeroy
 
 import adafruit_tlc59711
 
-
-# Define SPI bus connected to chip.  You only need the clock and MOSI (output)
-# line to use this chip.
-spi = busio.SPI(board.SCK, MOSI=board.MOSI)
-
-# Define the TLC59711 instance.
-leds = adafruit_tlc59711.TLC59711(spi)
+# Define the TLC59711 instance. Specify the bus and device.
+bus = 0
+device = 0
+leds = adafruit_tlc59711.TLC59711(bus, device)
 # Optionally you can disable the auto_show behavior that updates the chip
 # as soon as any channel value is written.  The default is True/on but you can
 # disable and explicitly call show to control when updates happen for better
