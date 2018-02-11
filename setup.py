@@ -12,4 +12,5 @@ setup(name            = "tlc59711",
       maintainer_email= "steve@staticfree.info",
       license         = "MIT",
       url             = "https://github.com/xxv/Adafruit_Python_TLC59711",
+      py_modules      = ['tlc59711'],
 )
