@@ -26,10 +26,10 @@
 Python module for the TLC59711 16-bit 12 channel LED PWM driver.  See
 examples/simpletest.py for a demo of the usage.
 
-* Author(s): Tony DiCola, Steve Pomeroy
+* Author(s): Tony DiCola, Steve Pomeroy, modified by Luis Soenksen
 """
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/xxv/Adafruit_Python_TLC59711.git"
+__repo__ = "https://github.com/lrsoenksen/Adafruit_Python_TLC59711.git"
 
 import spidev
 
